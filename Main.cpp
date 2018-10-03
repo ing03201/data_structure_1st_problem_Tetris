@@ -193,8 +193,28 @@ int main(int argc, char *argv[]) {
 
   registerAlarm(); // enable a one-second timer
 
+
+  srand(time(NULL)); // 랜덤하게 만들기 위함.
+
+  int t = rand() % 7;
+  int d = rand() % 4;
+  int col;
+
+  switch (t){
+  case 0:
+	  col = 2;
+	  break;
+  case 6:
+	  col = 4;
+	  break;
+  default:
+	  col = 3;
+	  break;
+  }
+
+	
   Matrix *iScreen = new Matrix(arrayScreen, iScreenDy + iScreenDw, iScreenDx + 2 * iScreenDw);
-  Matrix *currBlk = new Matrix(arrayBlk, 4, 4);
+  Matrix *currBlk = new Matrix(setOfBlockArrays[t][d], col, col);
   Matrix *tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
   Matrix *tempBlk2 = tempBlk->add(currBlk);
   Matrix *oScreen = new Matrix(iScreen);
