@@ -196,8 +196,8 @@ int main(int argc, char *argv[]) {
 
   srand(time(NULL)); // 랜덤하게 만들기 위함.
 
-  int t = rand() % 7;
-  int d = rand() % 4;
+  int t = rand() % MAX_BLK_TYPES;
+  int d = 0;
   int col;
 
   switch (t){
@@ -240,7 +240,7 @@ int main(int argc, char *argv[]) {
       case 'a': left++; break; // undo: move right
       case 'd': left--; break; // undo: move left
       case 's': top--; newBlockNeeded = true; break; // undo: move up
-      case 'w': break; // undo: rotate the block counter-clockwise
+      case 'w': d = (d+1) % MAX_BLK_DEGREES break; // undo: rotate the block counter-clockwise
       case ' ': break; // undo: move up
       }
       delete tempBlk;
@@ -258,7 +258,20 @@ int main(int argc, char *argv[]) {
       top = 0; left = iScreenDw + iScreenDx/2 - iScreenDw/2;
       newBlockNeeded = false;
       delete currBlk;
-      currBlk = new Matrix(arrayBlk, 4, 4);
+      t = rand() % MAX_BLK_TYPES;
+      d = 0;
+      switch (t){
+        case 0:
+            col = 2;
+            break;
+        case 6:
+            col = 4;
+            break;
+        default:
+            col = 3;
+            break;
+  }
+      currBlk = new Matrix(setOfBlockArrays[4*t+d], col, col);
       delete tempBlk;
       tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
       delete tempBlk2;
