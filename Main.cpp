@@ -240,7 +240,7 @@ int main(int argc, char *argv[]) {
       case 'a': left++; break; // undo: move right
       case 'd': left--; break; // undo: move left
       case 's': top--; newBlockNeeded = true; break; // undo: move up
-      case 'w': d = (d+1) % MAX_BLK_DEGREES break; // undo: rotate the block counter-clockwise
+      case 'w': d = (d+1) % MAX_BLK_DEGREES; break; // undo: rotate the block counter-clockwise
       case ' ': break; // undo: move up
       }
       delete tempBlk;
