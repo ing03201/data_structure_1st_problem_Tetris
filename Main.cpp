@@ -183,6 +183,8 @@ int *setOfBlockArrays[] = {
   T5D0, T5D1, T5D2, T5D3,
   T6D0, T6D1, T6D2, T6D3,
 };
+Matrix *setOfObjects[MAX_BLK_TYPES][MAX_BLK_DEGREES];
+
 
 int main(int argc, char *argv[]) {
   bool newBlockNeeded = false;
@@ -192,7 +194,19 @@ int main(int argc, char *argv[]) {
   char key;
 
   registerAlarm(); // enable a one-second timer
-
+  for(int i = 0; i < MAX_BLK_TYPES; i++)
+	  for(int j = 0; j < MAX_BLK_DEGREES; j++)
+		  switch(i){
+			  case 0:
+				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],2,2);
+				  break;
+			  case 6:
+				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],4,4);
+				  break;
+			  default:
+				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],3,3);
+				  break;
+		  }
 
   srand(time(NULL)); // 랜덤하게 만들기 위함.
 
@@ -214,7 +228,7 @@ int main(int argc, char *argv[]) {
 
 	
   Matrix *iScreen = new Matrix(arrayScreen, iScreenDy + iScreenDw, iScreenDx + 2 * iScreenDw);
-  Matrix *currBlk = new Matrix(setOfBlockArrays[t][d], col, col);
+  Matrix *currBlk = setOfObjects[t][d];
   Matrix *tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
   Matrix *tempBlk2 = tempBlk->add(currBlk);
   Matrix *oScreen = new Matrix(iScreen);
@@ -271,7 +285,7 @@ int main(int argc, char *argv[]) {
             col = 3;
             break;
   }
-      currBlk = new Matrix(setOfBlockArrays[4*t+d], col, col);
+      currBlk = setOfObjects[t][d];
       delete tempBlk;
       tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
       delete tempBlk2;
