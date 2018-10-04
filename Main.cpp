@@ -183,7 +183,7 @@ int *setOfBlockArrays[] = {
   T5D0, T5D1, T5D2, T5D3,
   T6D0, T6D1, T6D2, T6D3,
 };
-Matrix *setOfObjects[MAX_BLK_TYPES][MAX_BLK_DEGREES];
+Matrix ***setOfObjects;
 
 
 int main(int argc, char *argv[]) {
@@ -194,19 +194,23 @@ int main(int argc, char *argv[]) {
   char key;
 
   registerAlarm(); // enable a one-second timer
-  for(int i = 0; i < MAX_BLK_TYPES; i++)
+  // setOfObjects 초기화
+  setOfObjects = new  Matrix* *[MAX_BLK_TYPES];
+  for(int i = 0; i < MAX_BLK_TYPES; i++) {
+	  *(setOfObjects + i) = new Matrix *[MAX_BLK_DEGREES];
 	  for(int j = 0; j < MAX_BLK_DEGREES; j++)
 		  switch(i){
 			  case 0:
-				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],2,2);
+				  **(setOfObjects + i + j) = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],2,2);
 				  break;
 			  case 6:
-				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],4,4);
+				  **(setOfObjects + i + j) = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],4,4);
 				  break;
 			  default:
-				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],3,3);
+				  **(setOfObjects + i + j) = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],3,3);
 				  break;
 		  }
+  }
 
   srand(time(NULL)); // 랜덤하게 만들기 위함.
 
@@ -290,6 +294,14 @@ int main(int argc, char *argv[]) {
       tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
       delete tempBlk2;
       tempBlk2 = tempBlk->add(currBlk);
+	  
+	  // setOfObjects 동적할당 해제
+	  for(int i = 0; i < MAX_BLK_TYPES; i++){
+		  for(int j =0; i < MAX_BLK_DEGREES; j++)
+			  delete [] **(setOfObjects + i + j);
+		  delete [] *(*setOfObjects + i);
+	  }
+	  delete[] *setOfObjects; 
 
       if (tempBlk2->anyGreaterThan(1)) {
 	cout << "Game Over!" << endl;

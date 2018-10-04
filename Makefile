@@ -6,9 +6,9 @@ DEPS=Matrix_e.h
 OBJS=Main.o Matrix_e.o ttymodes.o
 DEBUG=0
 
-all:: Main.exe
+all:: .Main
 
-Main.exe: $(OBJS)
+.Main: $(OBJS)
 	$(CC) -o $@ $^ -std=c++11 $(CFLAGS) $(LDFLAGS)
 
 %.o: %.c $(DEPS)
@@ -18,4 +18,4 @@ Main.exe: $(OBJS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean: 
-	rm -f *.exe *.o *~ *.stackdump
+	rm -f .Main *.o *~ *.stackdump
