@@ -184,7 +184,6 @@ int *setOfBlockArrays[] = {
   T6D0, T6D1, T6D2, T6D3,
 };
 Matrix ***setOfObjects;
-// Matrix *setOfObjects[MAX_BLK_TYPES][MAX_BLK_DEGREES];
 
 int main(int argc, char *argv[]) {
   bool newBlockNeeded = false;
@@ -248,7 +247,8 @@ int main(int argc, char *argv[]) {
     case 'd': left++; break; // move right
     case 's': top++; break; // move down
     case 'w': d = (d+1) % MAX_BLK_DEGREES; break; // rotate the block clockwise
-    case ' ': break; // drop the block
+    case ' ': 
+			  break; // drop the block
     default: cout << "unknown key!" << endl;
     }
     *currBlk = setOfObjects[t][d];
