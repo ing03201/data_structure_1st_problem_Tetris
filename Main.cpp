@@ -184,7 +184,7 @@ int *setOfBlockArrays[] = {
   T6D0, T6D1, T6D2, T6D3,
 };
 Matrix ***setOfObjects;
-
+// Matrix *setOfObjects[MAX_BLK_TYPES][MAX_BLK_DEGREES];
 
 int main(int argc, char *argv[]) {
   bool newBlockNeeded = false;
@@ -196,19 +196,20 @@ int main(int argc, char *argv[]) {
   registerAlarm(); // enable a one-second timer
 
   // setOfObjects 초기화
+  
   setOfObjects = new  Matrix **[MAX_BLK_TYPES];
   for(int i = 0; i < MAX_BLK_TYPES; i++) {
-	  setOfObjects[i] = new Matrix *[MAX_BLK_DEGREES];
+	  setOfObjects[i] = new Matrix *[MAX_BLK_TYPES];
 	  for(int j = 0; j < MAX_BLK_DEGREES; j++){
 		  switch(i){
 			  case 0:
-				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],2,2);
+				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[j],2,2);
 				  break;
 			  case 6:
-				  setOfObjects[i][j]  = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],4,4);
+				  setOfObjects[i][j]  = new Matrix(setOfBlockArrays[i * MAX_BLK_DEGREES + j],4,4);
 				  break;
 			  default:
-				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_TYPES + j],3,3);
+				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_DEGREES + j],3,3);
 				  break;
 		  }
 	  }
@@ -232,7 +233,6 @@ int main(int argc, char *argv[]) {
 	  break;
   }
 
-	
   Matrix *iScreen = new Matrix(arrayScreen, iScreenDy + iScreenDw, iScreenDx + 2 * iScreenDw);
   Matrix *currBlk = setOfObjects[t][d];
   Matrix *tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
@@ -247,14 +247,17 @@ int main(int argc, char *argv[]) {
     case 'a': left--; break; // move left
     case 'd': left++; break; // move right
     case 's': top++; break; // move down
-    case 'w': break; // rotate the block clockwise
+    case 'w': d = (d+1) % MAX_BLK_DEGREES; break; // rotate the block clockwise
     case ' ': break; // drop the block
     default: cout << "unknown key!" << endl;
     }
+    *currBlk = setOfObjects[t][d];
     delete tempBlk;
     tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
     delete tempBlk2;
     tempBlk2 = tempBlk->add(currBlk);
+
+
     if (tempBlk2->anyGreaterThan(1)) {
       switch (key) {
       case 'a': left++; break; // undo: move right
@@ -263,21 +266,26 @@ int main(int argc, char *argv[]) {
       case 'w': d = (d+1) % MAX_BLK_DEGREES; break; // undo: rotate the block counter-clockwise
       case ' ': break; // undo: move up
       }
+      *currBlk = setOfObjects[t][d];
       delete tempBlk;
       tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
       delete tempBlk2;
       tempBlk2 = tempBlk->add(currBlk);
     }
+
+
     //delete oScreen;    oScreen = new Matrix(iScreen);
     oScreen->paste(iScreen, 0, 0);
     oScreen->paste(tempBlk2, top, left);
     drawMatrix(oScreen); cout << endl;
+
+
     if (newBlockNeeded) {
       //delete iScreen;      iScreen = new Matrix(oScreen);
       iScreen->paste(oScreen, 0, 0);
       top = 0; left = iScreenDw + iScreenDx/2 - iScreenDw/2;
       newBlockNeeded = false;
-      delete currBlk;
+      
       t = rand() % MAX_BLK_TYPES;
       d = 0;
       switch (t){
@@ -290,22 +298,23 @@ int main(int argc, char *argv[]) {
         default:
             col = 3;
             break;
-  }
+    }
       *currBlk = setOfObjects[t][d];
       delete tempBlk;
       tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
       delete tempBlk2;
       tempBlk2 = tempBlk->add(currBlk);
 	  
+      if (tempBlk2->anyGreaterThan(1)) {
+	cout << "Game Over!" << endl;
+    // delete setOfObjects
 	  for(int i = 0; i < MAX_BLK_TYPES; i++){
 		  for(int j = 0; j < MAX_BLK_DEGREES; j++)
 			  delete[] setOfObjects[i][j];
 		  delete[] setOfObjects[i];
 	  }
 	  delete[] setOfObjects;
-				  
-      if (tempBlk2->anyGreaterThan(1)) {
-	cout << "Game Over!" << endl;
+
 	exit(0);
       }
       //delete oScreen;      oScreen = new Matrix(iScreen);
@@ -314,7 +323,6 @@ int main(int argc, char *argv[]) {
       drawMatrix(oScreen); cout << endl;
     }
   }
-
 
   exit(0);
 }
