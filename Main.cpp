@@ -294,14 +294,6 @@ int main(int argc, char *argv[]) {
       tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
       delete tempBlk2;
       tempBlk2 = tempBlk->add(currBlk);
-	  
-	  // setOfObjects 동적할당 해제
-	  for(int i = 0; i < MAX_BLK_TYPES; i++){
-		  for(int j =0; i < MAX_BLK_DEGREES; j++)
-			  delete [] *(*setOfObjects + i + j);
-		  delete [] (*setOfObjects + i);
-	  }
-	  delete[] *setOfObjects; 
 
       if (tempBlk2->anyGreaterThan(1)) {
 	cout << "Game Over!" << endl;
