@@ -198,7 +198,7 @@ int main(int argc, char *argv[]) {
   
   setOfObjects = new  Matrix **[MAX_BLK_TYPES];
   for(int i = 0; i < MAX_BLK_TYPES; i++) {
-	  setOfObjects[i] = new Matrix *[MAX_BLK_TYPES];
+	  setOfObjects[i] = new Matrix *[MAX_BLK_DEGREES];
 	  for(int j = 0; j < MAX_BLK_DEGREES; j++){
 		  switch(i){
 			  case 0:
@@ -247,7 +247,8 @@ int main(int argc, char *argv[]) {
     case 'd': left++; break; // move right
     case 's': top++; break; // move down
     case 'w': d = (d+1) % MAX_BLK_DEGREES; break; // rotate the block clockwise
-    case ' ': 
+    case ' ': while(tempBlk2_anyGreaterThan(1))
+	    	top++;
 			  break; // drop the block
     default: cout << "unknown key!" << endl;
     }
