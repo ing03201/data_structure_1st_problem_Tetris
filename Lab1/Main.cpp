@@ -194,42 +194,24 @@ int main(int argc, char *argv[]) {
 
   registerAlarm(); // enable a one-second timer
 
-  // setOfObjects 초기화
+  srand(time(NULL)); // t를 랜덤하게 만들기 위함
   
+  int t = rand() % MAX_BLK_TYPES;
+  int d = 0;
+  int col;
+  int dirs = 0;
+  // setOfObjects 초기화
   setOfObjects = new  Matrix **[MAX_BLK_TYPES];
   for(int i = 0; i < MAX_BLK_TYPES; i++) {
 	  setOfObjects[i] = new Matrix *[MAX_BLK_DEGREES];
 	  for(int j = 0; j < MAX_BLK_DEGREES; j++){
 		  switch(i){
-			  case 0:
-				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[j],2,2);
-				  break;
-			  case 6:
-				  setOfObjects[i][j]  = new Matrix(setOfBlockArrays[i * MAX_BLK_DEGREES + j],4,4);
-				  break;
-			  default:
-				  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_DEGREES + j],3,3);
-				  break;
+			  case 0: col = 2; break;
+			  case 6: col = MAX_BLK_DEGREES; break;
+			  default: col = 3; break;
 		  }
+		  setOfObjects[i][j] = new Matrix(setOfBlockArrays[i * MAX_BLK_DEGREES + j], col, col);
 	  }
-  }
-
-  srand(time(NULL)); // 랜덤하게 만들기 위함.
-
-  int t = rand() % MAX_BLK_TYPES;
-  int d = 0;
-  int col;
-
-  switch (t){
-  case 0:
-	  col = 2;
-	  break;
-  case 6:
-	  col = 4;
-	  break;
-  default:
-	  col = 3;
-	  break;
   }
 
   Matrix *iScreen = new Matrix(arrayScreen, iScreenDy + iScreenDw, iScreenDx + 2 * iScreenDw);
@@ -243,35 +225,43 @@ int main(int argc, char *argv[]) {
 
   while ((key = getch()) != 'q') {
     switch (key) {
-    case 'a': left--; break; // move left
-    case 'd': left++; break; // move right
-    case 's': top++; break; // move down
-    case 'w': d = (d+1) % MAX_BLK_DEGREES; break; // rotate the block clockwise
-    case ' ': while(tempBlk2_anyGreaterThan(1))
-	    	top++;
-			  break; // drop the block
-    default: cout << "unknown key!" << endl;
-    }
+    	case 'a': left--; break; // move left
+    	case 'd': left++; break; // move right
+    	case 's': top++; break; // move down
+    	case 'w': d = (d + 1) % MAX_BLK_DEGREES; break; // rotate the block clockwise
+		case ' ': 
+                while(!(tempBlk2->anyGreaterThan(1))){
+                    top++;
+                    delete tempBlk;
+                    tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
+                    delete tempBlk2;
+                    tempBlk2 = tempBlk->add(currBlk);
+                    newBlockNeeded = true;
+                }
+				break;
+		default: cout << "unknown key!" << endl;
+    	}
     *currBlk = setOfObjects[t][d];
     delete tempBlk;
     tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
     delete tempBlk2;
     tempBlk2 = tempBlk->add(currBlk);
 
+	// 충돌시의 코드
+	if (tempBlk2->anyGreaterThan(1)) {
 
-    if (tempBlk2->anyGreaterThan(1)) {
-      switch (key) {
-      case 'a': left++; break; // undo: move right
-      case 'd': left--; break; // undo: move left
-      case 's': top--; newBlockNeeded = true; break; // undo: move up
-      case 'w': d = (d+1) % MAX_BLK_DEGREES; break; // undo: rotate the block counter-clockwise
-      case ' ': break; // undo: move up
-      }
-      *currBlk = setOfObjects[t][d];
-      delete tempBlk;
-      tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
-      delete tempBlk2;
-      tempBlk2 = tempBlk->add(currBlk);
+		switch (key) {
+    		case 'a': left++; break; // undo: move right
+      		case 'd': left--; break; // undo: move left
+      		case 's': top--; newBlockNeeded = true; break; // undo: move up
+      		case 'w': d = (d - 1) % MAX_BLK_DEGREES; break; // undo: rotate the block counter-clockwise
+      		case ' ': top--; break; // undo: move up
+      		}
+      	*currBlk = setOfObjects[t][d];
+      	delete tempBlk;
+      	tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
+      	delete tempBlk2;
+      	tempBlk2 = tempBlk->add(currBlk);
     }
 
 
@@ -281,49 +271,36 @@ int main(int argc, char *argv[]) {
     drawMatrix(oScreen); cout << endl;
 
 
-    if (newBlockNeeded) {
-      //delete iScreen;      iScreen = new Matrix(oScreen);
-      iScreen->paste(oScreen, 0, 0);
-      top = 0; left = iScreenDw + iScreenDx/2 - iScreenDw/2;
-      newBlockNeeded = false;
-      
-      t = rand() % MAX_BLK_TYPES;
-      d = 0;
-      switch (t){
-        case 0:
-            col = 2;
-            break;
-        case 6:
-            col = 4;
-            break;
-        default:
-            col = 3;
-            break;
-    }
-      *currBlk = setOfObjects[t][d];
-      delete tempBlk;
-      tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
-      delete tempBlk2;
-      tempBlk2 = tempBlk->add(currBlk);
-	  
-      if (tempBlk2->anyGreaterThan(1)) {
-	cout << "Game Over!" << endl;
-    // delete setOfObjects
-	  for(int i = 0; i < MAX_BLK_TYPES; i++){
-		  for(int j = 0; j < MAX_BLK_DEGREES; j++)
-			  delete[] setOfObjects[i][j];
-		  delete[] setOfObjects[i];
-	  }
-	  delete[] setOfObjects;
-
-	exit(0);
-      }
-      //delete oScreen;      oScreen = new Matrix(iScreen);
-      oScreen->paste(iScreen, 0, 0);
-      oScreen->paste(tempBlk2, top, left);
-      drawMatrix(oScreen); cout << endl;
-    }
+	if (newBlockNeeded) {
+    	//delete iScreen;      iScreen = new Matrix(oScreen);
+    	iScreen->paste(oScreen, 0, 0);
+      	top = 0; left = iScreenDw + iScreenDx/2 - iScreenDw/2;
+      	newBlockNeeded = false;
+     	t = rand() % MAX_BLK_TYPES;
+		d = 0;
+      	*currBlk = setOfObjects[t][d];
+     	delete tempBlk;
+     	tempBlk = iScreen->clip(top, left, top + currBlk->get_dy(), left + currBlk->get_dx());
+     	delete tempBlk2;
+     	tempBlk2 = tempBlk->add(currBlk);
+		//새로운 블럭이 나오자마자 충돌이 일어날때 게임을 끝낸다,  
+     	if (tempBlk2->anyGreaterThan(1)) {
+			cout << "Game Over!" << endl;
+    		// delete setOfObjects
+	  		for(int i = 0; i < MAX_BLK_TYPES; i++){
+		  		for(int j = 0; j < MAX_BLK_DEGREES; j++)
+			  		delete[] setOfObjects[i][j];
+		  		delete[] setOfObjects[i];
+	  		}
+	  		delete[] setOfObjects;
+			exit(0);
+      	}
+      	//delete oScreen;      oScreen = new Matrix(iScreen);
+      	oScreen->paste(iScreen, 0, 0);
+      	oScreen->paste(tempBlk2, top, left);
+      	drawMatrix(oScreen); cout << endl;
+   	}
   }
 
-  exit(0);
+  	exit(0);
 }
