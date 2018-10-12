@@ -7,7 +7,7 @@ using namespace std;
 
 int main1(int argc, char *argv[]) {
   GameEntry e1("aa", 10), e2("bb", 20),
-  	e3("cc", 30), e4("dd", 40);
+  	e3("cc", 30), e4("dd", 40); // board 객체는 GameEntry를 최대 3개 수용할수 있다. -> GameEntry를 4개 추가하면?
   Scores board(3);
 
   board.add(e1);
@@ -19,7 +19,7 @@ int main1(int argc, char *argv[]) {
     e = board.remove(0);    cout << e << endl;
     e = board.remove(0);    cout << e << endl;
   }
-  catch (out_of_range& e) {
+  catch (out_of_range& e) { // try 구문 안에서 exception 발생시 프로그램 흐름은 여기로 이동한다!
     cout << e.what() << endl;
   }
   return 0;
