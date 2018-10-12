@@ -25,4 +25,9 @@
     
 * O(n) = order of n , 자료구조의 속성을 알고 싶을 때 쓰는 단위, 크면 클수록 비용이 많이 든다는 것을 의미.
 
-
+  링크드 리스트
+    
+    Singly Linked list
+    
+      일련의 node들로 구성된 자료구조
+      Node = element(변수), linked to next node(다음 변수의 주소 포인터)
