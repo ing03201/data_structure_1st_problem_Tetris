@@ -1,6 +1,7 @@
 #Problem2 
 링크드 리스트를 이용한 과제
-
+SLinkedlist와 DLinkedList 클래스 안에서 객체e의 score 값을 참조하여
+전체리스트가 score 값의 내림차순으로 정렬되게 하는 addSorted 함수를 
 
 
 
