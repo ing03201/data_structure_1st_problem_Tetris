@@ -6,14 +6,14 @@ using namespace std;
 
 class Scores {				
 public:
-  Scores(int maxEnt = 10);		
-  ~Scores();				
+  Scores(int maxEnt = 10);		// 생성자
+  ~Scores();				          // 소멸자
   void add(const GameEntry& e);		
   GameEntry remove(int i) throw(out_of_range);
 private:
   int maxEntries;			
   int numEntries;			
-  GameEntry* entries;			
+  GameEntry* entries;			// GameEntry 배열의 첫원소의 주소
 };
 
 Scores::Scores(int maxEnt) {		
