@@ -8,8 +8,10 @@ using namespace std;
 //-----------------------------------------------------//
 
 template <typename E> class SLinkedList;
+// SLinked 선언이 Snode 선언보다 앞서야 하는 이유?
+// SNode에서 SLinked 클래스를 사용하기 때문
 
-template <typename E>
+template <typename E> // E는 데이터 타입
 class SNode {				// singly linked list node
 private:
   E elem;				// linked list element value
