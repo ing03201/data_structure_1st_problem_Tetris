@@ -5,17 +5,19 @@
 
 using namespace std;
 
+// 4개 객체를 입력하여 최고득점 3개를 출력한다. - c언어 답게 만든 코드 1단계
 int main1(int argc, char *argv[]) {
   GameEntry e1("aa", 10), e2("bb", 20),
-  	e3("cc", 30), e4("dd", 40); // board 객체는 GameEntry를 최대 3개 수용할수 있다. -> GameEntry를 4개 추가하면?
+  	e3("cc", 30), e4("dd", 40); // board 객체는 GameEntry를 최대 3개 수용할수 있다. -> GameEntry를 4개 추가하면? - 된다
   Scores board(3);
 
   board.add(e1);
   board.add(e2);
   board.add(e3);
   board.add(e4);
+  // score board에 4개의 객체를 받는다.
   try {
-    GameEntry e = board.remove(0);    cout << e << endl;
+    GameEntry e = board.remove(0); /* 0번째 원소를 뽑아낸다. */   cout << e << endl;
     e = board.remove(0);    cout << e << endl;
     e = board.remove(0);    cout << e << endl;
   }
