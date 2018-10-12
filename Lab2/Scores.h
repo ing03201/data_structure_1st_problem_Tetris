@@ -4,6 +4,11 @@
 
 using namespace std;
 
+/*
+GameEntry 객체를 받아
+배열을 할당해서 배열을 관리한다.
+*/
+
 class Scores {				
 public:
   Scores(int maxEnt = 10);		// 생성자
