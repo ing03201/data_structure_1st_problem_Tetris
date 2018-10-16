@@ -32,8 +32,3 @@ ostream& operator<<(ostream& out, const GameEntry& obj){
   out << "GameEntry(" << obj.name << ", " << obj.score << ")";
   return out;
 }
-
-
-
-
-

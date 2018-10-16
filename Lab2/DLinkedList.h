@@ -84,10 +84,19 @@ const E& DLinkedList<E>::elem(int k) const {	// get k-th element
 
 template <typename E>
 void DLinkedList<E>::add(DNode<E>* v, const E& e) { // insert new node before v
-  DNode<E>* u = new DNode<E>;  u->elem = e;	// create a new node for e
+  DNode<E>* u = new DNode<E>;
+  u->elem = e;	// create a new node for e
+#if 1
+  u->prev = v->prev;			// ...and v->prev
+  v->prev->next = u;
+  u->next = v;				// link u in between v
+  v->prev = u;
+#else
   u->next = v;				// link u in between v
   u->prev = v->prev;			// ...and v->prev
-  v->prev->next = v->prev = u;
+  v->prev->next = u;
+  v->prev = u;
+#endif
 }
 
 template <typename E>

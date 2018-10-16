@@ -100,7 +100,19 @@ void SLinkedList<E>::print(void) {
 // Homework!!
 //-----------------------------------------------------//
 template <typename E>
-void SLinkedList<E>::addSorted(const E& e) {	
+void SLinkedList<E>::addSorted(const E& e) {
+	if(e.getScore() != NULL || this->front().getScore() >= e.getScore()) {}
+	else
+	{
+		while(e.getScore() !=NULL && e.getScore() >= this->front.getScore())
+		{
+			this->head = this->head->next;
+			if(this->head->next == NULL){
+				break;
+			}
+		}
+	}
+	this->addFront(e);
   return;
 }
 
