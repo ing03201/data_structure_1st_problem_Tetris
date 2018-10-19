@@ -101,18 +101,25 @@ void SLinkedList<E>::print(void) {
 //-----------------------------------------------------//
 template <typename E>
 void SLinkedList<E>::addSorted(const E& e) {
-	if(e.getScore() != NULL || this->front().getScore() >= e.getScore()) {}
-	else
+	
+	this->addFront(e);
+
+	SNode<E> *curr = new SNode<E>;
+
+	SNode<E> *prev = new SNode<E>;
+
+	for(prev = this->head; prev->next != NULL; prev = prev->next)
 	{
-		while(e.getScore() !=NULL && e.getScore() >= this->front.getScore())
-		{
-			this->head = this->head->next;
-			if(this->head->next == NULL){
-				break;
+		for(curr = prev->next; curr->next != NULL; curr = curr->next){
+			if(curr->elem.getScore() < curr->next->elem.getScore())
+			{
+				prev->next = curr->next;
+				curr->next = prev->next->next;
+				prev->next->next = curr;
 			}
 		}
 	}
-	this->addFront(e);
+	
   return;
 }
 

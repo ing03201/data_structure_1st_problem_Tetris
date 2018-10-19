@@ -1,17 +1,13 @@
 # Set compiler to use
-
-# Variables
 CC=g++
 CFLAGS=-g -I. -fpermissive
 LDFLAGS=
-DEPS=Scores.h GameEntry.h SLinkedList.h DLinkedList.h
+DEPS=LinkedDeque.h DLinkedList.h
 DEBUG=0
 
-#output program
-all:: .List
+all:: Maze.exe
 
-#Target : Dependency list /n Command list
-.List: List.o
+Maze.exe: Maze.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 %.o: %.c $(DEPS)
@@ -21,4 +17,4 @@ all:: .List
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean: 
-	rm -f .List *.o *~ *.log *.stackdump
+	rm -f *.exe *.o *~ *.log *.stackdump
