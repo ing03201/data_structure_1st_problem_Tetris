@@ -8,10 +8,10 @@ DEPS=Scores.h GameEntry.h SLinkedList.h DLinkedList.h
 DEBUG=0
 
 #output program
-all:: .List
+all:: List.exe
 
 #Target : Dependency list /n Command list
-.List: List.o
+List.exe: List.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 %.o: %.c $(DEPS)
@@ -21,4 +21,4 @@ all:: .List
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean: 
-	rm -f .List *.o *~ *.log *.stackdump
+	rm -f List.exe *.o *~ *.log *.stackdump

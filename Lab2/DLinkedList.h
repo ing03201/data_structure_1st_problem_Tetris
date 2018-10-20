@@ -145,5 +145,21 @@ void DLinkedList<E>::print(void) {
 template <typename E>
 void DLinkedList<E>::addSorted(const E& e) {	
 
+	
+	if(empty() || e.getScore() <= this->front().getScore()){
+		addFront(e);
+	} 
+	
+	else {
+		DNode<E> *cmp; // 기존에 비교할 노드들
+		for(cmp = this->header; cmp->next != this->trailer; cmp = cmp->next){
+			if(e.getScore() >= cmp->next->elem.getScore())
+				continue;
+			else
+				break;
+		}
+		add(cmp->next,e);
+	}
+
   return;
 }
