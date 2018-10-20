@@ -102,20 +102,23 @@ void SLinkedList<E>::print(void) {
 template <typename E>
 void SLinkedList<E>::addSorted(const E& e) {
 
-	this->addFront(e);
 	
-	SNode<E> *curr; // 입력받은 노드 포인터
-
-	SNode<E> *prev; // curr의 이전 포인터
+	if(this->empty() || e.getScore() > this->front().getScore()){
+		addFront(e);
+	} 
 	
-	for(prev = head; prev->next != NULL; prev = prev->next){
-		for(curr = prev->next; curr->next != NULL; curr = curr->next){ // 
-			if(prev->elem.getScore() <= curr->elem.getScore()){
-				prev->next = curr->next;
-				curr->next = prev->next->next;
-				prev->next->next = curr;
-			}
+	else {
+		SNode<E> *cmp; // 기존에 비교할 노드들
+		for(cmp = this->head; cmp->next != NULL; cmp = cmp->next){
+			if(cmp->next->elem.getScore() >= e.getScore())
+				continue;
+			else 
+				break;
 		}
+		SNode<E> *v = new SNode<E>; // 새로입력할 노드
+		v->elem = e;
+		v->next = cmp->next;
+		cmp->next = v;
 	}
   return;
 }
