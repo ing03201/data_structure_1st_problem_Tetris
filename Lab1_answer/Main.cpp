@@ -346,6 +346,5 @@ int main(int argc, char *argv[]) {
       drawMatrix(oScreen); cout << endl;
     }
   }
-
   exit(0);
 }
