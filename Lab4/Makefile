@@ -5,9 +5,9 @@ LDFLAGS=
 DEPS=
 DEBUG=0
 
-all:: Calc.exe
+all:: HeapSort.exe
 
-Calc.exe: Calc.o
+HeapSort.exe: HeapSort.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 %.o: %.c $(DEPS)

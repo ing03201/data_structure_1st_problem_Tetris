@@ -2,12 +2,12 @@
 CC=g++
 CFLAGS=-g -I. -fpermissive
 LDFLAGS=
-DEPS=
+DEPS=LinkedDeque.h DLinkedList.h
 DEBUG=0
 
-all:: Calc.exe
+all:: Maze.exe
 
-Calc.exe: Calc.o
+Maze.exe: Maze.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 %.o: %.c $(DEPS)
