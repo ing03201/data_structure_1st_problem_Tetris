@@ -3,10 +3,16 @@
 
 using namespace std;
 
+#define EXIT_SUCCESS 0
+/*
+#define PLUS 1 // plus minus
+#define MINUS 2 // product division
+#define
+*/
 #define TYPE_PAREN 1
 #define TYPE_OPERATOR 2
 #define TYPE_NUMBER 3
-#define EXIT_SUCCESS 0
+
 
 class Token {
 public:
@@ -56,63 +62,94 @@ int parse(char *s) {
   return 0;
 }
 
-void print_tokens(void) {
-  Token *p;
-
-  for (p = tokenDeque.front(); !tokenDeque.empty(); p = tokenDeque.front()) {
-    cout << *p << endl;
-    tokenDeque.pop_front();
-  }
-}
 
 /* Home Work*/
-void calc(deque<int> *n, deque<int> *o){
-	deque<int>::iterator i = n->begin();
-	deque<int>::iterator j = o->begin();
+int calc(deque<int> *n, deque<int> *o){
+	deque<int>::iterator i = o->begin();
 	int temp1, temp2;
-	while(*j ==  '(' && i != n->end() && o->empty()){
-		switch(*j){
-			case ')': break;
+	int total = 0;
+	while(!o->empty()){
+		temp1 = n->front();
+		n->pop_front();
+		temp2 = n->front();
+		n->pop_front();
+		switch(*i){
 			case '(': break;
-			case '+': temp1 = *i; n->pop_front(); temp2 = *i; n->pop_front(); n->push_front(temp1+temp2); break;
-			case '-': temp1 = *i; n->pop_front(); temp2 = *i; n->pop_front(); n->push_front(temp1-temp2); break;
-			case '*': temp1 = *i; n->pop_front(); temp2 = *i; n->pop_front(); n->push_front(temp1*temp2); break;
-			case '/': temp1 = *i; n->pop_front(); temp2 = *i; n->pop_front(); n->push_front(temp1/temp2); break;
+			case '+': total = temp1 + temp2; break;
+			case '-': total = temp1 - temp2; break;
+			case '*': total = temp1 * temp2; break;
+			case '/': total = temp1 / temp2; break;
 			default: break;
 		}
+		if(total != 0){
+			n->push_front(total);
+		}
 		o->pop_front();
-		j++;
+		i++;
 	}
+	if(o->empty() || n->size() == 1)
+		total = n->front();
+	return total;
+	
 }
-void tokenstack(void){
+int tokenstack(void){
 	deque<int> number;
 	deque<int> oper;
-
-	for(int i = 0; i < tokenDeque.size(); i++){
+	int result;
+	for(unsigned int i = 0; i < tokenDeque.size(); i++){
 		int t = tokenDeque[i]->type;
 		int v = tokenDeque[i]->value;
 		switch(t){
 			case TYPE_PAREN:
-				if(v == ')'){
-					i++;
-					calc(&number, &oper);
-				}
+				if(v == ')')
+					result = calc(&number, &oper);
+					number.push_front(result);
+				if(v == '(')
+					oper.push_front(v);
 				break;
 			case TYPE_OPERATOR:
-				if(v == '*' || v == '/'&&tokenDeque[i+1]->type == TYPE_NUMBER){
-					i++;
-					number.push_front(v);
-					calc(&number,&oper);
-				}
 				oper.push_front(v);
+				if(v == '*' || v == '/'){
+					i++;
+					if(tokenDeque[i]->type == TYPE_NUMBER){
+						v = tokenDeque[i]->type;
+						number.push_front(v);
+						result = calc(&number, &oper);
+						number.push_front(result);
+					}
+						
+				}
 				break;
 			case TYPE_NUMBER:
 				number.push_front(v);
 				break;
 			default : break;
 		}
+		
 	}
-	calc(&number, &oper);
+	result = calc(&number, &oper);
+	return result;
+}
+/*
+int priority(int k)
+{
+	switch(k){
+		case '+': return PM; break;
+		case '-': return PM; break;
+		case '*': return PD; break;
+		case '/': return PD; break;
+		default : return 0; break;
+	}
+}
+*/
+void print_tokens(void) {
+  Token *p;
+  int result = tokenstack();
+  for (p = tokenDeque.front(); !tokenDeque.empty(); p = tokenDeque.front()) {
+    cout << *p << endl;
+    tokenDeque.pop_front();
+  }
+  cout << "Calculate result = " << result << endl;
 }
 
 int main(int argc, char *argv[])
