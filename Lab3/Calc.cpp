@@ -89,7 +89,6 @@ int calc(deque<int> *n, deque<int> *o){
 	}
 	if(o->empty() || n->size() == 1)
 		total = n->front();
-	cout << total << endl;
 	return total;
 	
 }
@@ -113,7 +112,11 @@ int tokenstack(void){
 				if(v == '*' || v == '/'){
 					i++;
 					if(tokenDeque[i]->type == TYPE_NUMBER){
+<<<<<<< HEAD
 						v = tokenDeque[i]->value;
+=======
+						v = tokenDeque[i]->type;
+>>>>>>> master
 						number.push_front(v);
 						result = calc(&number, &oper);
 						number.push_front(result);
@@ -127,11 +130,30 @@ int tokenstack(void){
 			default : break;
 		}
 		
+<<<<<<< HEAD
 	}
 	result = calc(&number, &oper);
 	return result;
 }
 
+=======
+	}
+	result = calc(&number, &oper);
+	return result;
+}
+/*
+int priority(int k)
+{
+	switch(k){
+		case '+': return PM; break;
+		case '-': return PM; break;
+		case '*': return PD; break;
+		case '/': return PD; break;
+		default : return 0; break;
+	}
+}
+*/
+>>>>>>> master
 void print_tokens(void) {
   Token *p;
   int result = tokenstack();
