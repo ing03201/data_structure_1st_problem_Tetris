@@ -24,7 +24,8 @@ int main() {
     Vertex("K", 10, UN_VISITED),       Vertex("L", 11, UN_VISITED), 
     Vertex("M", 12, UN_VISITED),       Vertex("N", 13, UN_VISITED), 
     Vertex("0", 14, UN_VISITED),       Vertex("P", 15, UN_VISITED) 
-  };
+  }; // main 함수에서 쓰고버릴 vertex 배열 => 
+	// 생성자 호출로 배열 내에 변수들을 채워넣는다. 이름은 v[i]로 사용
 
   Graph::Edge edges[NUM_EDGES] = {
     Edge(v[0], v[1], 10),    Edge(v[1], v[0], 10), 
@@ -52,7 +53,7 @@ int main() {
     Edge(v[11], v[15], 10),  Edge(v[15], v[11], 10), 
     Edge(v[12], v[13], 10),  Edge(v[13], v[12], 10), 
     Edge(v[14], v[15], 10),  Edge(v[15], v[14], 10) 
-  }; 
+  }; // Edges 라는 배열 선언 => 생성자 함수를 통한 배열 원소 입력
  
   Graph simpleGraph(NUM_NODES); 
 	
@@ -60,6 +61,7 @@ int main() {
   for (int i=0; i<NUM_NODES; i++) { 
     simpleGraph.insertVertex(v[i]); 
   } 
+	// edgelist vertexlist에도 입력이 된다.
       
   VtxList vtxLst; 
   simpleGraph.vertices(vtxLst); 
@@ -96,8 +98,10 @@ int main() {
   DepthFirstSearch dfsGraph(simpleGraph);
   dfsGraph.showConnectivity();
 
+	
+// 문제 푸는 단계  - 최단경로 x 우연히 경로를 찾은 것
   VtxList path; 
-  dfsGraph.findPath(v[0], v[15], path); 
+  dfsGraph.findPath(v[0], v[15], path); // 처음부터 끝까지 경로 찾기
   cout << "Path (" << v[0] << " => " << v[15] << ") : "; 
   for (VtxItor vItor = path.begin(); vItor != path.end(); ++vItor) 
     cout << *vItor << "    "; 
