@@ -137,7 +137,9 @@ void BreadthFirstSearch::bfsTraversal(Vertex& s, Vertex& target, VertexList& pat
 	minCost = pLeastCost[i]; 
       } 
     }
-		  
+	
+	cout << "Vertex (" << pVrtxArray[minID] << ") with least cost = " << minCost << endl;
+	
     if (minID == -1) { 
       cout << "Error in FindShortestPath() -- target is not connected to the start !!" << endl; 
       break; 
@@ -159,10 +161,10 @@ void BreadthFirstSearch::bfsTraversal(Vertex& s, Vertex& target, VertexList& pat
       } 
     }
 		   
-    int pLS, ppDistMtrx_i; 
+    //int pLS, ppDistMtrx_i; 
     for (int i=0; i<num_nodes; i++) { 
-      pLS = pLeastCost[i]; 
-      ppDistMtrx_i = ppDistMtrx[minID][i]; 
+      //pLS = pLeastCost[i]; 
+      //ppDistMtrx_i = ppDistMtrx[minID][i]; 
  
       if ( (pBFS_Process_Stat[i] != SELECTED) &&  
 	   (pLeastCost[i] > (pLeastCost[minID] + ppDistMtrx[minID][i]))) { 
@@ -229,9 +231,10 @@ void BreadthFirstSearch::visit(Edge& e)  {
     } else { 
       (*eItor).setEdgeStatus(EDGE_VISITED); 
     } 
-  } else 
+  } else {
     cout << "Vertex (" << vtx_1 << ") ID of Edge (" ; 
-  cout << e << ") is out-of-range (" << numNodes << ")" << endl; 
+	cout << e << ") is out-of-range (" << numNodes << ")" << endl; 
+  }
 }
 
 void BreadthFirstSearch::unvisit(Vertex& v)  {  
@@ -264,9 +267,10 @@ void BreadthFirstSearch::unvisit(Edge& e)  {
     } else { 
       (*eItor).setEdgeStatus(EDGE_UN_VISITED); 
     } 
-  } else 
+  } else {
     cout << "Vertex (" << vtx_1 << ") ID of Edge (" ; 
-  cout << e << ") is out-of-range (" << numNodes << ")" << endl; 
+	cout << e << ") is out-of-range (" << numNodes << ")" << endl; 
+  }
 } 
  
 bool BreadthFirstSearch::isVisited(Vertex& v)  {  

@@ -5,12 +5,15 @@ LDFLAGS=
 DEPS=
 DEBUG=0
 
-all:: DFSMain.exe BFSMain.exe
+all:: DFSMain.exe BFSMain.exe BFSMain2.exe
 
 DFSMain.exe: DFSMain.o DFS.o Graph.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 BFSMain.exe: BFSMain.o BFS.o Graph.o
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+
+BFSMain2.exe: BFSMain2.o BFS.o Graph.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 %.o: %.c $(DEPS)

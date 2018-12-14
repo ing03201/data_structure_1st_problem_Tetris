@@ -5,12 +5,15 @@ LDFLAGS=
 DEPS=
 DEBUG=0
 
-all:: Calc.exe mobum.exe
+all:: LBTree.exe ELBTree.exe Map.exe 
 
-Calc.exe: Calc.o
+LBTree.exe: LBTree.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
-mobum.exe: mobum.o
+ELBTree.exe: ELBTree.o
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+
+Map.exe: Map.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 %.o: %.c $(DEPS)

@@ -103,7 +103,7 @@ void DepthFirstSearch::dfsTraversal(Vertex& v, Vertex& target, VertexList& path)
     return; 
   } 
   EdgeList incidentEdges; 
-  incidentEdges.clear();  // stack에 저장되어있으므로 stack의 쓰레기값이 저장되어있을수있으므로 쓰레기값 제거
+  incidentEdges.clear(); 
   graph.incidentEdges(v, incidentEdges); 
   EdgeItor pe = incidentEdges.begin(); 
   while (!isDone() && pe != incidentEdges.end()) { 

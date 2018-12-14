@@ -1,16 +1,19 @@
 # Set compiler to use
 CC=g++
-CFLAGS=-g -I. -fpermissive
+CFLAGS=-g -I. -fpermissive -Wno-conversion-null -Wno-write-strings
 LDFLAGS=
 DEPS=
 DEBUG=0
 
-all:: Calc.exe mobum.exe
+all:: DFSMain.exe BFSMain.exe BFSMain2.exe
 
-Calc.exe: Calc.o
+DFSMain.exe: DFSMain.o DFS.o Graph.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
-mobum.exe: mobum.o
+BFSMain.exe: BFSMain.o BFS.o Graph.o
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+
+BFSMain2.exe: BFSMain2.o BFS.o Graph.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 %.o: %.c $(DEPS)
