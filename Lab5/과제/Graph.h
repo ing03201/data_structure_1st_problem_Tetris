@@ -8,7 +8,7 @@
 #include <string>
 
 #define PLUS_INF INT_MAX/2
-enum VertexStatus {UN_VISITED, VISITED, VRTX_NOT_FOUND};
+enum VertexStatus {UN_VISITED, VISITED, VRTX_NOT_FOUND}; // vertex 상태에 세가지 종류, 미방문, 방문, 리스트에 없을때
 enum EdgeStatus {DISCOVERY, BACK, CROSS, EDGE_UN_VISITED, EDGE_VISITED, EDGE_NOT_FOUND}; 
 
 using namespace std;  
@@ -50,7 +50,8 @@ class Graph { // Graph based on Adjacency Matrix
       fout << "Edge(" << e.getVertex_1() << ", " << e.getVertex_2();     
       fout  << ", d(" << setw(2) << e.getDistance() << "))";             
       return fout;          
-    }   
+    }
+    bool operator>(Edge E1){ return this->getDistance() > E1.getDistance();}   
   public:  
   Edge() : pVrtx_1(NULL), pVrtx_2(NULL), distance(PLUS_INF) {}    
   Edge(Vertex v1, Vertex v2, int d) : vrtx_1(v1), vrtx_2(v2), distance(d), pVrtx_1(NULL), pVrtx_2(NULL), edgeStatus(EDGE_UN_VISITED) { } 
@@ -60,12 +61,12 @@ class Graph { // Graph based on Adjacency Matrix
     }        
     Vertex opposite(Vertex v) {               
       if (v == *pVrtx_1)  
-	return *pVrtx_2;  
+      	return *pVrtx_2;  
       else if (v == *pVrtx_2)   
-	return *pVrtx_1;             
+	      return *pVrtx_1;             
       else {                     
-	//cout << "Error in opposite()" << endl;  
-	return Vertex(NULL);              
+	      //cout << "Error in opposite()" << endl;  
+	      return Vertex(NULL);              
       }        
     }          
     Vertex getVertex_1() {return vrtx_1;}      
