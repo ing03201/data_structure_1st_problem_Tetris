@@ -17,6 +17,8 @@ class Graph { // Graph based on Adjacency Matrix
  public:      
   class Vertex;      
   class Edge;
+
+  // vertex 구현부
  public:      
   class Vertex {                
     friend ostream& operator<<(ostream& fout, Vertex v) {
@@ -44,6 +46,7 @@ class Graph { // Graph based on Adjacency Matrix
  public:      
   typedef std::list<Vertex> VtxList; 
 
+// edge 구현부
  public:
   class Edge {           
     friend ostream& operator<<(ostream& fout, Edge& e) {                

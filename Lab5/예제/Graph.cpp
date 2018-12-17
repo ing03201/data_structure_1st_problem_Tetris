@@ -54,7 +54,7 @@ void Graph::edges(EdgeList& edges) {
   } 
 }
 
-void Graph::incidentEdges(Vertex v, EdgeList& edgeLst) { 
+void Graph::incidentEdges(Vertex v, EdgeList& edgeLst) { // vertex
   Graph::Edge e; 
   EdgeItor eItor; 
   int vtx_id = v.getID(); 
