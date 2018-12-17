@@ -2,10 +2,9 @@
 #include <iomanip> 
 #include <list> 
 #include <algorithm> 
-#include <queue>
 #include "Graph.h" 
 #include "BFS.h" 
- 
+
 using namespace std; 
  
 typedef Graph::Vertex Vertex; 
@@ -89,123 +88,109 @@ void BreadthFirstSearch::printDistMtrx() {
   cout << endl; 
 }
 
-
-// HomeWork 
-/*
-  1. 거리 배열과 경로배열을 -1로 초기화
-  2. 현재 노드에서 연결된 노드들을 우선순위 큐에 넣는다. 우선순위 큐이므로 최단거리로 정렬됨.(시작점일 경우 시작노드를 큐에 넣음)
-  3. 현재 노드와 연결된 노드들 사이의 최단거리를 찾아서 거리 배열과 경로배열을 채운다.
-  4. (3) ~ (4) 을 모든 노드를 방문할 때 까지 반복한다.
-*/
-/* Graph 헤더 파일에 구현되어있는 함수
-bool operator>(Edge E1){
-  return this->getDistance() > E1.getDistance();
-}
-*/
 enum BFS_PROCESS_STATUS {NOT_SELECTED, SELECTED}; 
-void BreadthFirstSearch::bfsTraversal(Vertex& s, Vertex& target, VertexList& path) { 
-  int** ppDistMtrx; // 거리배열
-  int* pLeastCost; // 최소 비용 배열
-  int num_nodes, num_selected; 
-  int* pPrev; // 이전 
-  int minID, minCost; // 최소 id 최소 비용
-  BFS_PROCESS_STATUS* pBFS_Process_Stat; // BFS 과정 상태
 
-  Vertex* pVrtxArray;  // vertex array
-  Vertex vrtx, *pPrevVrtx, v; // vertex, 이전 노드, 현재노드 
+void BreadthFirstSearch::bfsTraversal(Vertex& s, Vertex& target, VertexList& path) { 
+  int** ppDistMtrx; 
+  int* pLeastCost; 
+  int num_nodes, num_selected; 
+  int* pPrev; 
+  int minID, minCost; 
+  BFS_PROCESS_STATUS* pBFS_Process_Stat; 
+ 
+  Vertex* pVrtxArray; 
+  Vertex vrtx, *pPrevVrtx, v; 
   Edge e; 
-  int start_vrtxid, target_vrtxid, curVrtx_ID, vrtxID;  // 시작 vertex id, 끝 vertex id , 현재 vertex id, vertex id 
+  int start_vrtxid, target_vrtxid, curVrtx_ID, vrtxID; 
   EdgeList* pAdjLstArray; 
 
-  priority_queue<Edge, int> PQ;
+  HeapPriorityQueue<Vertex, WhoIsLess> HQ;
 
-  pVrtxArray = graph.getpVrtxArray();  // Vertex 
+  pVrtxArray = graph.getpVrtxArray(); 
   pAdjLstArray = graph.getpAdjLstArray(); 
-  start_vrtxid = start.getID(); // 시작 노드
-  target_vrtxid = target.getID(); // 끝 노드 
+  start_vrtxid = start.getID(); 
+  target_vrtxid = target.getID(); 
  
-  num_nodes = graph.getNumVertices(); // 노드 갯수 
-  ppDistMtrx = getppDistMtrx(); // 거리 행렬
-  
-  
-  pLeastCost = new int[num_nodes]; // 최단경로 거리 
-  pPrev = new int[num_nodes];  // 
-  pBFS_Process_Stat = new BFS_PROCESS_STATUS[num_nodes]; // BFS 프로세스 상태 배열
-  // initialize L(n) = w(start, n); 
-  // 시작점 처리
-  for (int i=0; i< num_nodes; i++) { // 시작점 처리 
-    pLeastCost[i] = ppDistMtrx[start_vrtxid][i]; 
-    pPrev[i] = start_vrtxid; 
-    pBFS_Process_Stat[i] = NOT_SELECTED; 
+  num_nodes = graph.getNumVertices(); 
+  ppDistMtrx = getppDistMtrx(); 
+      
+  pLeastCost = new int[num_nodes]; 
+  pPrev = new int[num_nodes]; 
+  pBFS_Process_Stat = new BFS_PROCESS_STATUS[num_nodes];
+  for (int i=0; i< num_nodes; i++) { 
+	  pLeastCost[i] = PLUS_INF;
+	  pPrev[i] = start_vrtxid; 
+	  pBFS_Process_Stat[i] = NOT_SELECTED; 
   } 
+  pLeastCost[start_vrtxid] = 0;
   pBFS_Process_Stat[start_vrtxid] = SELECTED; 
   num_selected = 1; 
-      
-  
-  int round = 0; 
- 
-  while (num_selected < num_nodes) { // 노드 갯수가 선택한 노드의 갯수보다 작을 때까지 루프 돌리기
-    round++; 
-    cout << "=== round " << round << " ==== " << endl;  
-    // find current node with LeastCost 
-    minID = -1; 
-    minCost = PLUS_INF; 
-    for (int i=0; i<num_nodes; i++)  { 
-      if ((pLeastCost[i] < minCost) && (pBFS_Process_Stat[i] != SELECTED)) { 
-	      minID = i; 
-	      minCost = pLeastCost[i]; 
-      } 
+//
+
+
+// 
+  pVrtxArray[start_vrtxid].setWeight(0);
+  HQ.insert(pVrtxArray[start_vrtxid]);
+  int round = 0;
+
+  while (!HQ.empty()) {
+	  int curWeight = -1 * HQ.min().getWeight(); // 현재노드 현재 가중치
+	  int curPos = HQ.min().getID(); // 현재 노드의 위치
+
+	  HQ.removeMin(); // 현재 노드 없애기 
+    // 가중치가 이상하게 들어갔을 수있으므로!
+	  int checkWeight = HQ.min().getWeight();
+	  int checkID = HQ.min().getID();
+	  if (checkWeight != pVrtxArray[checkID].getWeight()) {
+		  HQ.min().setWeight(pVrtxArray[checkID].getWeight());
     }
-    //현재 vertex리스트를 이용하여 최소 코스트를 출력한다.
-	  cout << "Vertex (" << pVrtxArray[minID] << ") with least cost = " << minCost << endl;
-	
-    if (minID == -1) { // 연결된 노드가 하나도 없을 때 
-      cout << "Error in FindShortestPath() -- target is not connected to the start !!" << endl; 
-      break; 
-    } 
-    else { // 연결된 노드가 있을 때
-      pBFS_Process_Stat[minID] = SELECTED; // 첫 노드의 방문상태를 선택상태로 한다. 
-      num_selected++; // 선택된 노드의 갯수가 늘어난다.
-      if (minID == target_vrtxid) { // 최소 노드의 이름이 도착점의 이름과 같다면 
-	      cout << "reached to the target node !!" << endl; 
-      	cout << "Least Cost = " << minCost << endl; 
-      	vrtxID = minID; // 현재노드의 이름을 최소 노드이름으로 한다.
-    	  do { // 시작노드의 이름과 현재 노드의 이름이 틀릴 때까지
-  	      vrtx = pVrtxArray[vrtxID]; // 
-	        path.push_front(vrtx); 
-	        vrtxID = pPrev[vrtxID]; 
-        } while (vrtxID != start_vrtxid); 
-	      vrtx = pVrtxArray[vrtxID]; 
-	      path.push_front(vrtx); // start node 
-	      break; 
-      } 
-      ///
-    }
-		   
-    //int pLS, ppDistMtrx_i; 
-    for (int i=0; i<num_nodes; i++) { 
-      //pLS = pLeastCost[i]; 
-      //ppDistMtrx_i = ppDistMtrx[minID][i];  
-      if ( (pBFS_Process_Stat[i] != SELECTED) && (pLeastCost[i] > (pLeastCost[minID] + ppDistMtrx[minID][i]))) { 
-      	pPrev[i] = minID; 
-      	pLeastCost[i] = pLeastCost[minID] + ppDistMtrx[minID][i]; 
-      } 
-    } 
- 
-    // print out the pLeastCost[] for debugging 
+    int minDistance;
+	  for (int i = 0; i < num_nodes; i++) {
+		  if ((ppDistMtrx[curPos][i] != 0) && (ppDistMtrx[curPos][i] != PLUS_INF)) {
+			  minDistance = curWeight + ppDistMtrx[curPos][i];
+			  if ((pBFS_Process_Stat[i] == NOT_SELECTED) && pLeastCost[i] == PLUS_INF) {
+				  pLeastCost[i] = minDistance;
+				  pVrtxArray[i].setWeight(-1 * minDistance);
+				  HQ.insert(pVrtxArray[i]);
+				  pPrev[i] = curPos;
+			  }
+        // weight 
+			  if ((pLeastCost[i] > minDistance) && (pBFS_Process_Stat[i] != SELECTED)) {
+				  pLeastCost[i] = minDistance;
+          pVrtxArray[i].setWeight(-1 * minDistance);
+				  pPrev[i] = curPos;
+			  }
+		  }
+	  }
+
+	  round++;
     // 디버깅용 파트
-    for (int i=0; i<num_nodes; i++) { 
-      cout << (char)(i+'A') << setw(5);
-      if(pLeastCost[i] != PLUS_INF) {
-      	cout << pLeastCost[i] << setw(1) << ", "; 
-      }
-      else {
-      	cout << "+oo" << setw(1) << ", ";
-      }
-    } 
-    cout << endl; 
-  }  // end while() 
- // 디버깅할 때 출력하는 부분
+	  cout << "=== round " << round << " ==== " << endl;
+	  for (int i = 0; i<num_nodes; i++) {
+		  cout << (char)(i + 'A') << setw(5);
+		  if (pLeastCost[i] != PLUS_INF) {
+			  cout << pLeastCost[i] << setw(1) << ", ";
+		  }
+		  else {
+			  cout << "+oo" << setw(1) << ", ";
+		  }
+	  }
+	  cout << endl;
+  }
+  if (pLeastCost[target_vrtxid] == PLUS_INF) {
+	  cout << "Select Wrong Vertex!" << endl;
+	  exit(0);
+  }
+
+  cout << endl;
+  cout << "Reach to the Target!" << endl;
+  cout << "Least Cost = " << pLeastCost[target_vrtxid] << endl;
+  Vertex temp = pVrtxArray[target_vrtxid];
+  while (temp.getID() != start_vrtxid) {
+	  path.push_front(temp);
+	  temp = pVrtxArray[pPrev[temp.getID()]];
+  }
+  path.push_front(temp);
 }
 
 void BreadthFirstSearch::findShortestPath(Vertex &s, Vertex &target, VertexList& path) { 

@@ -17,8 +17,6 @@ class Graph { // Graph based on Adjacency Matrix
  public:      
   class Vertex;      
   class Edge;
-
-  // vertex 구현부
  public:      
   class Vertex {                
     friend ostream& operator<<(ostream& fout, Vertex v) {
@@ -26,12 +24,14 @@ class Graph { // Graph based on Adjacency Matrix
       return fout;           
     }      
  public:           
-  Vertex() : name(), ID(-1) {}
-  Vertex(string n, int id, VertexStatus vs) : name(n), ID(id), vtxStatus(vs) { }
-  Vertex(char *pN, int id, VertexStatus vs) : name(string(pN)), ID(id), vtxStatus(vs) { } 
-  Vertex(int id) : ID(id) {}  
+  Vertex() : name(), ID(-1), Weight(0) {}
+  Vertex(string n, int id, VertexStatus vs) : name(n), ID(id), vtxStatus(vs), Weight(0) { }
+  Vertex(char *pN, int id, VertexStatus vs) : name(string(pN)), ID(id), vtxStatus(vs), Weight(0) { }
+  Vertex(int id) : ID(id), Weight(0) {}
     string getName() { return name;} 
     int getID() {return ID;} 
+	int getWeight() { return Weight; }
+	void setWeight(int weg) { Weight = weg; }
     void setName(string c_name) { name = c_name;}      
     void setID(int id) { ID = id;}    
     bool operator==(Vertex v) {return ((ID == v.getID()) && (name == v.getName())); }   
@@ -41,12 +41,12 @@ class Graph { // Graph based on Adjacency Matrix
  private:           
     string name; 
     int ID;    
+	int Weight;
     VertexStatus vtxStatus; 
  };  // end class Vertex public:  typedef std::list<Graph::Vertex> VtxList; 
  public:      
   typedef std::list<Vertex> VtxList; 
 
-// edge 구현부
  public:
   class Edge {           
     friend ostream& operator<<(ostream& fout, Edge& e) {                
@@ -128,4 +128,112 @@ class Graph { // Graph based on Adjacency Matrix
   Vertex* pVrtxArray;   
   EdgeList* pAdjLstArray;   
   int num_vertices;
+};
+
+template <typename E>
+class VectorCompleteTree {
+private:
+	std::vector<E> V;
+public:
+	typedef typename std::vector<E>::iterator Position;
+protected:
+	Position pos(int i)
+	{
+		return V.begin() + i;
+	}
+	int idx(const Position& p) const
+	{
+		return p - V.begin();
+	}
+public:
+	VectorCompleteTree() : V(1) {}
+	int size() const { return V.size() - 1; }
+	Position left(const Position& p) { return pos(2 * idx(p)); }
+	Position right(const Position& p) { return pos(2 * idx(p) + 1); }
+	Position parent(const Position& p) { return pos(idx(p) / 2); }
+	bool hasLeft(const Position& p) const { return 2 * idx(p) <= size(); }
+	bool hasRight(const Position& p) const { return 2 * idx(p) + 1 <= size(); }
+	bool isRoot(const Position& p) const { return idx(p) == 1; }
+	Position root() { return pos(1); }
+	Position last() { return pos(size()); }
+	void addLast(const E& e) { V.push_back(e); }
+	void removeLast() { V.pop_back(); }
+	void swap(const Position& p, const Position& q)
+	{
+		E e = *q; *q = *p; *p = e;
+	}
+};
+
+template <typename E, typename C>
+class HeapPriorityQueue {
+public:
+	int size() const;
+	bool empty() const;
+	void insert(const E& e);
+	E& min();
+	void removeMin();
+private:
+	VectorCompleteTree<E> T;
+	C isLess;
+
+	typedef typename VectorCompleteTree<E>::Position Position;
+};
+
+template <typename E, typename C>
+void HeapPriorityQueue<E, C>::insert(const E& e) {
+	T.addLast(e);
+	Position v = T.last();
+	while (!T.isRoot(v)) {
+		Position u = T.parent(v);
+		if (!isLess(*v, *u)) break;
+		T.swap(v, u);
+		v = u;
+	}
+}
+
+template <typename E, typename C>
+void HeapPriorityQueue<E, C>::removeMin() {
+	if (size() == 1)
+		T.removeLast();
+	else {
+		Position u = T.root();
+		T.swap(u, T.last());
+		T.removeLast();
+		while (T.hasLeft(u)) {
+			Position v = T.left(u);
+			if (T.hasRight(u) && isLess(*(T.right(u)), *v))
+				v = T.right(u);
+			if (isLess(*v, *u)) {
+				T.swap(u, v);
+				u = v;
+			}
+			else break;
+		}
+	}
+}
+
+template <typename E, typename C>
+int HeapPriorityQueue<E, C>::size() const
+{
+	return T.size();
+}
+
+template <typename E, typename C>
+bool HeapPriorityQueue<E, C>::empty() const
+{
+	return size() == 0;
+}
+
+template <typename E, typename C>
+E& HeapPriorityQueue<E, C>::min()
+{
+	return *(T.root());
+}
+
+class WhoIsLess {
+public:
+	bool operator()(Graph::Vertex& v1, Graph::Vertex& v2) const
+	{
+		return v1.getWeight() > v2.getWeight();
+	}
 };
