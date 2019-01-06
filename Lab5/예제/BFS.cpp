@@ -117,8 +117,11 @@ void BreadthFirstSearch::bfsTraversal(Vertex& s, Vertex& target, VertexList& pat
   int start_vrtxid, target_vrtxid, curVrtx_ID, vrtxID;  // 시작 vertex id, 끝 vertex id , 현재 vertex id, vertex id 
   EdgeList* pAdjLstArray; 
 
+<<<<<<< HEAD
   priority_queue<Edge, int> PQ;
 
+=======
+>>>>>>> master
   pVrtxArray = graph.getpVrtxArray();  // Vertex 
   pAdjLstArray = graph.getpAdjLstArray(); 
   start_vrtxid = start.getID(); // 시작 노드
@@ -169,7 +172,11 @@ void BreadthFirstSearch::bfsTraversal(Vertex& s, Vertex& target, VertexList& pat
       if (minID == target_vrtxid) { // 최소 노드의 이름이 도착점의 이름과 같다면 
 	      cout << "reached to the target node !!" << endl; 
       	cout << "Least Cost = " << minCost << endl; 
+<<<<<<< HEAD
       	vrtxID = minID; // 현재노드의 이름을 최소 노드이름으로 한다.
+=======
+      	vrtxID = minID; // 노드의 이름을 최소 노드이름으로 한다.
+>>>>>>> master
     	  do { // 시작노드의 이름과 현재 노드의 이름이 틀릴 때까지
   	      vrtx = pVrtxArray[vrtxID]; // 
 	        path.push_front(vrtx); 
